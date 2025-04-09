@@ -1,4 +1,4 @@
-FROM nvidia/cuda:12.1.0-cudnn8-devel-ubuntu22.04
+FROM nvidia/cuda:12.1.0-cudnn8-runtime-ubuntu22.04
 
 ENV DEBIAN_FRONTEND=noninteractive \
     PIP_PREFER_BINARY=1 \
@@ -42,7 +42,8 @@ RUN ln -s /usr/bin/python3.10 /usr/bin/python
 
 RUN pip install --no-cache-dir git+https://github.com/huggingface/accelerate
 
-RUN pip install --no-cache-dir torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu121
+RUN --mount=type=cache,target=/root/.cache/pip \
+    pip install --no-cache-dir torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu121
 
 RUN pip install --no-cache-dir \
     opencv-python-headless==4.8.1.78 \
