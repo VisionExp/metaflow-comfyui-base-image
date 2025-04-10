@@ -83,5 +83,5 @@ RUN echo "c.NotebookApp.notebook_dir = '/home/ComfyUI'" >> /root/.jupyter/jupyte
 
 EXPOSE 8188 8888
 
-COPY startup.sh /startup.sh
-RUN chmod +x /startup.sh
+COPY startup.sh /home/startup.sh
+RUN chmod +x /home/startup.sh
