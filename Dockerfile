@@ -33,6 +33,7 @@ RUN apt update && \
       build-essential \
       python3-venv \
       nvidia-cuda-toolkit && \
+    ln -s /usr/bin/pip3 /usr/bin/pip && \
     apt-get autoremove -y && \
     rm -rf /var/lib/apt/lists/* && \
     apt-get clean -y
@@ -40,10 +41,12 @@ RUN apt update && \
 
 RUN ln -s /usr/bin/python3.10 /usr/bin/python
 
-RUN --mount=type=cache,target=/root/.cache/pip \ pip install git+https://github.com/huggingface/accelerate
+
 
 RUN --mount=type=cache,target=/root/.cache/pip \
-    pip install --no-cache-dir torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu121
+    pip install --no-cache-dir torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu121 \
+
+RUN --mount=type=cache,target=/root/.cache/pip \ pip install git+https://github.com/huggingface/accelerate
 
 RUN --mount=type=cache,target=/root/.cache/pip \ pip install \
     opencv-python-headless==4.8.1.78 \
