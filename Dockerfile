@@ -9,7 +9,7 @@ WORKDIR /
 
 RUN apt update && \
     apt upgrade -y && \
-    apt install -y --no-install-recommends \
+    apt install -y \
       python3-dev \
       python3-pip \
       fonts-dejavu-core \
@@ -40,14 +40,15 @@ RUN apt update && \
 
 RUN ln -s /usr/bin/python3.10 /usr/bin/python
 
+RUN pip install --no-cache-dir git+https://github.com/huggingface/accelerate
 
+RUN pip install --no-cache-dir \
+    torch==2.2.2 \
+    torchvision==0.17.2 \
+    torchaudio==2.2.2 \
+    --extra-index-url https://download.pytorch.org/whl/cu121
 
-RUN --mount=type=cache,target=/root/.cache/pip \
-    python -m pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu121 \
-
-RUN --mount=type=cache,target=/root/.cache/pip \ python -m pip install git+https://github.com/huggingface/accelerate
-
-RUN --mount=type=cache,target=/root/.cache/pip \ python -m pip install \
+RUN pip install --no-cache-dir \
     opencv-python-headless==4.8.1.78 \
     pillow \
     transformers \
@@ -56,7 +57,7 @@ RUN --mount=type=cache,target=/root/.cache/pip \ python -m pip install \
     numpy \
     color-matcher
 
-RUN --mount=type=cache,target=/root/.cache/pip \ python -m pip install \
+RUN pip install --no-cache-dir \
     jupyter \
     jupyterlab \
     notebook \
@@ -67,13 +68,13 @@ RUN git clone https://github.com/comfyanonymous/ComfyUI.git
 
 WORKDIR /home/ComfyUI
 RUN --mount=type=cache,target=/root/.cache/pip \
-    python -m pip install -r requirements.txt
+    pip install -r requirements.txt
 WORKDIR /
 WORKDIR /home/ComfyUI/custom_nodes
 RUN git clone https://github.com/ltdrdata/ComfyUI-Manager.git
 WORKDIR /home/ComfyUI/custom_nodes/ComfyUI-Manager
 RUN --mount=type=cache,target=/root/.cache/pip \
-    python -m pip install -r requirements.txt
+    pip install -r requirements.txt
 
 RUN mkdir /root/.jupyter
 RUN jupyter notebook --generate-config
