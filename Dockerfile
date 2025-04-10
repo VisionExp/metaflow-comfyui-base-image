@@ -9,7 +9,7 @@ WORKDIR /
 
 RUN apt update && \
     apt upgrade -y && \
-    apt install -y \
+    apt install -y --no-install-recommends \
       python3-dev \
       python3-pip \
       fonts-dejavu-core \
@@ -40,12 +40,12 @@ RUN apt update && \
 
 RUN ln -s /usr/bin/python3.10 /usr/bin/python
 
-RUN pip install --no-cache-dir git+https://github.com/huggingface/accelerate
+RUN --mount=type=cache,target=/root/.cache/pip \ pip install git+https://github.com/huggingface/accelerate
 
 RUN --mount=type=cache,target=/root/.cache/pip \
     pip install --no-cache-dir torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu121
 
-RUN pip install --no-cache-dir \
+RUN --mount=type=cache,target=/root/.cache/pip \ pip install \
     opencv-python-headless==4.8.1.78 \
     pillow \
     transformers \
@@ -54,7 +54,7 @@ RUN pip install --no-cache-dir \
     numpy \
     color-matcher
 
-RUN pip install --no-cache-dir \
+RUN --mount=type=cache,target=/root/.cache/pip \ pip install \
     jupyter \
     jupyterlab \
     notebook \
