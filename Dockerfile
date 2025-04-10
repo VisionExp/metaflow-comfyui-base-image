@@ -33,7 +33,6 @@ RUN apt update && \
       build-essential \
       python3-venv \
       nvidia-cuda-toolkit && \
-    ln -s /usr/bin/pip3 /usr/bin/pip && \
     apt-get autoremove -y && \
     rm -rf /var/lib/apt/lists/* && \
     apt-get clean -y
@@ -44,11 +43,11 @@ RUN ln -s /usr/bin/python3.10 /usr/bin/python
 
 
 RUN --mount=type=cache,target=/root/.cache/pip \
-    pip install --no-cache-dir torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu121 \
+    python -m pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu121 \
 
-RUN --mount=type=cache,target=/root/.cache/pip \ pip install git+https://github.com/huggingface/accelerate
+RUN --mount=type=cache,target=/root/.cache/pip \ python -m pip install git+https://github.com/huggingface/accelerate
 
-RUN --mount=type=cache,target=/root/.cache/pip \ pip install \
+RUN --mount=type=cache,target=/root/.cache/pip \ python -m pip install \
     opencv-python-headless==4.8.1.78 \
     pillow \
     transformers \
@@ -57,7 +56,7 @@ RUN --mount=type=cache,target=/root/.cache/pip \ pip install \
     numpy \
     color-matcher
 
-RUN --mount=type=cache,target=/root/.cache/pip \ pip install \
+RUN --mount=type=cache,target=/root/.cache/pip \ python -m pip install \
     jupyter \
     jupyterlab \
     notebook \
@@ -68,13 +67,13 @@ RUN git clone https://github.com/comfyanonymous/ComfyUI.git
 
 WORKDIR /home/ComfyUI
 RUN --mount=type=cache,target=/root/.cache/pip \
-    pip install -r requirements.txt
+    python -m pip install -r requirements.txt
 WORKDIR /
 WORKDIR /home/ComfyUI/custom_nodes
 RUN git clone https://github.com/ltdrdata/ComfyUI-Manager.git
 WORKDIR /home/ComfyUI/custom_nodes/ComfyUI-Manager
 RUN --mount=type=cache,target=/root/.cache/pip \
-    pip install -r requirements.txt
+    python -m pip install -r requirements.txt
 
 RUN mkdir /root/.jupyter
 RUN jupyter notebook --generate-config
