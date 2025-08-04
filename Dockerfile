@@ -74,7 +74,34 @@ WORKDIR /home/ComfyUI/custom_nodes
 RUN git clone https://github.com/ltdrdata/ComfyUI-Manager.git
 WORKDIR /home/ComfyUI/custom_nodes/ComfyUI-Manager
 RUN --mount=type=cache,target=/root/.cache/pip \
-    pip install -r requirements.txt
+    pip install -r requirements.txt \
+
+WORKDIR /home/ComfyUI/custom_nodes
+
+# Перечисляем все URL репозиториев в одной переменной
+ENV GIT_REPOS=" \
+    https://github.com/Fannovel16/comfyui_controlnet_aux.git \
+    https://github.com/BadCafeCode/masquerade-nodes-comfyui.git \
+    https://github.com/cubiq/ComfyUI_IPAdapter_plus.git \
+    https://github.com/kijai/ComfyUI-SVD.git \
+    https://github.com/palant/image-resize-comfyui.git \
+    https://github.com/ai-shizuka/ComfyUI-tbox.git \
+    https://github.com/ltdrdata/ComfyUI-Impact-Pack.git \
+    https://github.com/kijai/ComfyUI-SUPIR.git \
+    https://github.com/VisionExp/ve_custom_comfyui_nodes.git \
+"
+
+# Клонируем все репозитории в одном слое с помощью цикла
+RUN apt-get update && apt-get install -y --no-install-recommends git && \
+    for repo_url in ${GIT_REPOS}; do \
+        git clone "${repo_url}" && \
+        repo_dir=$(basename "${repo_url}" .git) && \
+        if [ -f "${repo_dir}/requirements.txt" ]; then \
+            echo "Installing dependencies for ${repo_dir}" && \
+            pip install --no-cache-dir -r "${repo_dir}/requirements.txt"; \
+        fi; \
+    done && \
+    apt-get clean && rm -rf /var/lib/apt/lists/*
 
 RUN mkdir /root/.jupyter
 RUN jupyter notebook --generate-config
