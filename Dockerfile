@@ -91,7 +91,6 @@ ENV GIT_REPOS=" \
     https://github.com/VisionExp/ve_custom_comfyui_nodes.git \
 "
 
-# Клонируем все репозитории в одном слое с помощью цикла
 RUN apt-get update && apt-get install -y --no-install-recommends git && \
     for repo_url in ${GIT_REPOS}; do \
         git clone "${repo_url}" && \
