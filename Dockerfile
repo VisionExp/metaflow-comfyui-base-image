@@ -57,12 +57,6 @@ RUN pip install --no-cache-dir \
     numpy \
     color-matcher
 
-RUN pip install --no-cache-dir \
-    jupyter \
-    jupyterlab \
-    notebook \
-    ipywidgets
-
 WORKDIR /home
 RUN git clone https://github.com/comfyanonymous/ComfyUI.git
 
@@ -103,15 +97,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends git && \
     done && \
     apt-get clean && rm -rf /var/lib/apt/lists/*
 
-RUN mkdir /root/.jupyter
-RUN jupyter notebook --generate-config
-RUN echo "c.NotebookApp.password = ''" >> /root/.jupyter/jupyter_notebook_config.py
-RUN echo "c.NotebookApp.token = ''" >> /root/.jupyter/jupyter_notebook_config.py
-RUN echo "c.NotebookApp.ip = '0.0.0.0'" >> /root/.jupyter/jupyter_notebook_config.py
-RUN echo "c.NotebookApp.notebook_dir = '/home/ComfyUI'" >> /root/.jupyter/jupyter_notebook_config.py
 
-
-EXPOSE 8188 8888
+EXPOSE 8188
 
 COPY startup.sh /home/startup.sh
 RUN chmod +x /home/startup.sh
